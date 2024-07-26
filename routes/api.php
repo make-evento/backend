@@ -1,0 +1,38 @@
+<?php
+
+use App\Http\Controllers\Orgs\ContractController;
+use App\Http\Controllers\Orgs\CustomerController;
+use App\Http\Controllers\Orgs\EventTypeController;
+use App\Http\Controllers\Orgs\ItemCategoryController;
+use App\Http\Controllers\Orgs\ItemController;
+use App\Http\Controllers\Orgs\OrganizationController;
+use App\Http\Controllers\Orgs\ProposalController;
+use App\Http\Controllers\Orgs\SupplierController;
+use App\Http\Controllers\Orgs\TodoCardController;
+use App\Http\Controllers\Users\InviteController;
+use App\Http\Controllers\Users\MeController;
+use Illuminate\Support\Facades\Route;
+
+require __DIR__ . "/auth.php";
+
+Route::middleware('auth:sanctum')->group(function () {
+   Route::get('/users/me', [MeController::class, 'index']);
+   Route::get('/users/invites', [InviteController::class, 'index']);
+
+   Route::get('/orgs', [OrganizationController::class, 'index']);
+   Route::post('/orgs', [OrganizationController::class, 'store']);
+
+   Route::middleware('check.organization')->prefix('/orgs/{org}')->group(function () {
+       Route::apiResource('/customers', CustomerController::class);
+       Route::apiResource('/items/categories', ItemCategoryController::class);
+       Route::apiResource('/items', ItemController::class);
+       Route::apiResource('/event-types', EventTypeController::class);
+       Route::apiResource('/suppliers', SupplierController::class);
+       Route::apiResource('/todos', TodoCardController::class);
+
+       Route::get('/proposals/{proposal}/versions', [ProposalController::class, 'versions']);
+       Route::post('/proposals/{proposal}/{version}/contract', [ContractController::class, 'store']);
+
+       Route::apiResource('/proposals', ProposalController::class);
+   });
+});
