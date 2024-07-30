@@ -23,9 +23,12 @@ class ProposalController extends Controller
         return ProposalResource::collection($proposals);
     }
 
-    public function versions(Organization $org, Proposal $proposal): AnonymousResourceCollection
-    {
-        $proposals = $org->proposals()
+    public function versions(
+        Organization $org,
+        Proposal $proposal
+    ): AnonymousResourceCollection {
+        $proposals = $org
+            ->proposals()
             ->where("parent_id", $proposal->id)
             ->orWhere("id", $proposal->id)
             ->get();
@@ -35,26 +38,35 @@ class ProposalController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ProposalStoreRequest $request, Organization $org): ProposalResource
-    {
+    public function store(
+        ProposalStoreRequest $request,
+        Organization $org
+    ): ProposalResource {
         DB::beginTransaction();
 
         $version = 1;
 
         if ($request->parent) {
-            $version = $org->proposals()->where(function ($query) use ($request) {
-                $query->where("id", $request->parent)
-                    ->orWhere("parent_id", $request->parent);
-            })->count() + 1;
+            $version =
+                $org
+                    ->proposals()
+                    ->where(function ($query) use ($request) {
+                        $query
+                            ->where("id", $request->parent)
+                            ->orWhere("parent_id", $request->parent);
+                    })
+                    ->count() + 1;
         }
 
         /** @var Proposal $proposal */
-        $proposal = $org->proposals()->create([
-            ...$request->validated(),
-            "version" => $version,
-            "status" => ProposalStatus::PENDING,
-            "parent_id" => $request->parent
-        ]);
+        $proposal = $org
+            ->proposals()
+            ->create([
+                ...$request->validated(),
+                "version" => $version,
+                "status" => ProposalStatus::PENDING,
+                "parent_id" => $request->parent,
+            ]);
 
         $proposal->days()->createMany($request->days);
         $proposal->taxes()->createMany($request->taxes);
@@ -62,8 +74,11 @@ class ProposalController extends Controller
             collect($request->items)->map(function ($item) {
                 return [
                     ...$item,
-                    'item_id' => $item['id'],
-                    'cost_total' => $item['cost'] * $item['quantity'] * $item['days']
+                    "item_id" => $item["id"],
+                    "cost_total" =>
+                        $item["cost_per_unit"] *
+                        $item["quantity"] *
+                        $item["days"],
                 ];
             })
         );
@@ -77,8 +92,10 @@ class ProposalController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Organization $org, Proposal $proposal): ProposalResource
-    {
+    public function show(
+        Organization $org,
+        Proposal $proposal
+    ): ProposalResource {
         return new ProposalResource($proposal);
     }
 

@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
        Route::apiResource('/items', ItemController::class);
        Route::apiResource('/event-types', EventTypeController::class);
        Route::apiResource('/suppliers', SupplierController::class);
+
        Route::apiResource('/todos', TodoCardController::class);
 
        Route::get('/proposals/{proposal}/versions', [ProposalController::class, 'versions']);

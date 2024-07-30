@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Orgs;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Orgs\Todo\TodoUpdateRequest;
 use App\Http\Resources\Orgs\TodoResource;
 use App\Models\Organization;
 use App\Models\TodoCard;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -38,9 +40,10 @@ class TodoCardController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, TodoCard $todoCard)
+    public function update(TodoUpdateRequest $request, Organization $org, TodoCard $todo): JsonResponse
     {
-        //
+        tap($todo)->update($request->validated());
+        return response()->json(['message' => 'Todo updated successfully']);
     }
 
     /**
