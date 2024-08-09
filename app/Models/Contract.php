@@ -17,6 +17,7 @@ class Contract extends Model
         'proposal_id',
         'address_id',
         'organization_id',
+        'event_type_id',
         'document_number',
         'name',
         'ie',
@@ -44,6 +45,11 @@ class Contract extends Model
     public function organization(): BelongsTo
     {
         return $this->belongsTo(Organization::class);
+    }
+
+    public function eventType(): BelongsTo
+    {
+        return $this->belongsTo(EventType::class, "event_type_id");
     }
 
     public function todoCards(): HasMany

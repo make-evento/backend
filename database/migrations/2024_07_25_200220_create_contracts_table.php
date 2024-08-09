@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignUlid('proposal_id')->constrained()->cascadeOnDelete();
             $table->foreignUlid('address_id')->constrained()->cascadeOnDelete();
             $table->foreignUlid('organization_id')->constrained()->cascadeOnDelete();
+            $table->foreignUlid('event_type_id')->constrained()->cascadeOnDelete();
             $table->string('document_number');
             $table->string('name');
             $table->string('ie')->nullable();

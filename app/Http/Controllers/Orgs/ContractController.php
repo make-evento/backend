@@ -42,6 +42,7 @@ class ContractController extends Controller
         $contract = $org->contracts()->create([
             'proposal_id' => $proposal->id,
             'address_id' => $address->id,
+            'event_type_id' => $proposal->event_type_id,
             ...$request->validated('customer')
         ]);
 

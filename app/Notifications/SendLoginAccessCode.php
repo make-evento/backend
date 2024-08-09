@@ -4,9 +4,7 @@ namespace App\Notifications;
 
 use App\Mail\Auth\AccessCodeMail;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class SendLoginAccessCode extends Notification

@@ -5,6 +5,7 @@ use App\Http\Controllers\Orgs\CustomerController;
 use App\Http\Controllers\Orgs\EventTypeController;
 use App\Http\Controllers\Orgs\ItemCategoryController;
 use App\Http\Controllers\Orgs\ItemController;
+use App\Http\Controllers\Orgs\MemberController;
 use App\Http\Controllers\Orgs\OrganizationController;
 use App\Http\Controllers\Orgs\ProposalController;
 use App\Http\Controllers\Orgs\SupplierController;
@@ -28,8 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
        Route::apiResource('/items', ItemController::class);
        Route::apiResource('/event-types', EventTypeController::class);
        Route::apiResource('/suppliers', SupplierController::class);
-
        Route::apiResource('/todos', TodoCardController::class);
+       Route::apiResource('/members', MemberController::class);
 
        Route::get('/proposals/{proposal}/versions', [ProposalController::class, 'versions']);
        Route::post('/proposals/{proposal}/{version}/contract', [ContractController::class, 'store']);

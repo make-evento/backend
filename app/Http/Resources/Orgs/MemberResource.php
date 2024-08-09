@@ -5,7 +5,7 @@ namespace App\Http\Resources\Orgs;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TodoResource extends JsonResource
+class MemberResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +16,10 @@ class TodoResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'contract_id' => $this->contract_id,
-            'event_type' => $this->contract->eventType->name,
-            'status' => $this->status,
-            'item' => new TodoItemResource($this->item),
-            'created_at' => $this->created_at->format('Y-m-d'),
+            'name' => $this->user->name,
+            'role' => $this->role,
+            'organization_id' => $this->organization_id,
+            'user_id' => $this->user_id
         ];
     }
 }
