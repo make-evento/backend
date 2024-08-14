@@ -36,4 +36,19 @@ class TodoCard extends Model
     {
         return $this->belongsTo(Contract::class);
     }
+
+    public function tasks()
+    {
+        return $this->hasMany(TodoCardTask::class);
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(TodoCardPayment::class);
+    }
 }

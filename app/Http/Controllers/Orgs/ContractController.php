@@ -38,11 +38,20 @@ class ContractController extends Controller
 
         $address = Address::query()->create($request->address);
 
+        $eventDate = null;
+        $proposalEventDay = $proposal->days()->first();
+
+        if ($proposalEventDay) {
+            $eventDate = $proposalEventDay->date;
+        }
+
         /** @var Contract $contract */
         $contract = $org->contracts()->create([
             'proposal_id' => $proposal->id,
             'address_id' => $address->id,
             'event_type_id' => $proposal->event_type_id,
+            'contract_date' => $request->contract_date,
+            'event_date' => $eventDate,
             ...$request->validated('customer')
         ]);
 

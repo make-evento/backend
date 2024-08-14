@@ -33,4 +33,9 @@ class TodoCardItem extends Model
     {
         return $this->belongsTo(Item::class);
     }
+
+    public function supplierTotalValue()
+    {
+        return $this->supplier_quantity * $this->supplier_cost_per_unit * $this->supplier_days;
+    }
 }

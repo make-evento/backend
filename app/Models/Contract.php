@@ -24,7 +24,14 @@ class Contract extends Model
         'im',
         'contact',
         'phone',
-        'email'
+        'email',
+        'event_date',
+        'contract_date'
+    ];
+
+    protected $casts = [
+        'event_date' => 'date',
+        'contract_date' => 'date'
     ];
 
     public function address(): BelongsTo

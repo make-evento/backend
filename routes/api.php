@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Orgs\ChecklistController;
 use App\Http\Controllers\Orgs\ContractController;
 use App\Http\Controllers\Orgs\CustomerController;
 use App\Http\Controllers\Orgs\EventTypeController;
@@ -10,6 +11,8 @@ use App\Http\Controllers\Orgs\OrganizationController;
 use App\Http\Controllers\Orgs\ProposalController;
 use App\Http\Controllers\Orgs\SupplierController;
 use App\Http\Controllers\Orgs\TodoCardController;
+use App\Http\Controllers\Orgs\TodoCardPaymentController;
+use App\Http\Controllers\Orgs\TodoCardTaskController;
 use App\Http\Controllers\Users\InviteController;
 use App\Http\Controllers\Users\MeController;
 use Illuminate\Support\Facades\Route;
@@ -29,8 +32,19 @@ Route::middleware('auth:sanctum')->group(function () {
        Route::apiResource('/items', ItemController::class);
        Route::apiResource('/event-types', EventTypeController::class);
        Route::apiResource('/suppliers', SupplierController::class);
-       Route::apiResource('/todos', TodoCardController::class);
        Route::apiResource('/members', MemberController::class);
+
+       Route::get('/checklist', [ChecklistController::class, 'index']);
+
+       Route::prefix('/todos')->group(function () {
+           Route::get('/', [TodoCardController::class, 'index']);
+           Route::get('/{todo}', [TodoCardController::class, 'show']);
+           Route::patch('/{todo}', [TodoCardController::class, 'update']);
+           Route::patch('/{todo}/owner', [TodoCardController::class, 'owner']);
+           Route::patch('/{todo}/supplier', [TodoCardController::class, 'supplier']);
+           Route::apiResource('/{todo}/tasks', TodoCardTaskController::class);
+           Route::apiResource('/{todo}/payments', TodoCardPaymentController::class);
+       });
 
        Route::get('/proposals/{proposal}/versions', [ProposalController::class, 'versions']);
        Route::post('/proposals/{proposal}/{version}/contract', [ContractController::class, 'store']);

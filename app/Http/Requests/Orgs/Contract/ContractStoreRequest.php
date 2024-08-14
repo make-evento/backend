@@ -37,6 +37,7 @@ class ContractStoreRequest extends FormRequest
             'payment.fine' => 'required|numeric',
             'payment.interest' => 'required|numeric',
             'payment.additional_info' => 'nullable|string',
+            'contract_date' => 'nullable|date',
         ];
     }
 }

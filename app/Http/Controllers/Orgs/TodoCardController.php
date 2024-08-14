@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Orgs;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Orgs\Todo\TodoUpdateOwnerRequest;
 use App\Http\Requests\Orgs\Todo\TodoUpdateRequest;
+use App\Http\Requests\Orgs\Todo\TodoUpdateSupplierRequest;
 use App\Http\Resources\Orgs\TodoResource;
 use App\Models\Organization;
 use App\Models\TodoCard;
@@ -42,8 +44,29 @@ class TodoCardController extends Controller
      */
     public function update(TodoUpdateRequest $request, Organization $org, TodoCard $todo): JsonResponse
     {
+        // TODO: check owner is a member of the organization
+        // TODO: check logged in user is an admin of the organization
+
         tap($todo)->update($request->validated());
         return response()->json(['message' => 'Todo updated successfully']);
+    }
+
+    public function owner(TodoUpdateOwnerRequest $request, Organization $org, TodoCard $todo): JsonResponse
+    {
+        // TODO: check owner is a member of the organization
+        // TODO: check logged in user is an admin of the organization
+
+        tap($todo)->update($request->validated());
+        return response()->json(['message' => 'Todo owner updated successfully']);
+    }
+
+    public function supplier(TodoUpdateSupplierRequest $request, Organization $org, TodoCard $todo): JsonResponse
+    {
+        // TODO: check owner is a member of the organization
+        // TODO: check logged in user is an admin of the organization
+
+        tap($todo->item)->update($request->validated());
+        return response()->json(['message' => 'Todo supplier updated successfully']);
     }
 
     /**
