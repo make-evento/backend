@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Orgs;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Orgs\EventTypes\EventTypeStoreRequest;
+use App\Http\Requests\Orgs\EventTypes\EventTypeUpdateRequest;
 use App\Http\Resources\Orgs\EventTypeResource;
 use App\Models\EventType;
 use App\Models\Organization;
@@ -39,24 +40,30 @@ class EventTypeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Organization $org, EventType $event_type) : EventTypeResource
     {
-        //
+        return new EventTypeResource($event_type);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(EventTypeUpdateRequest $request, Organization $org, EventType $event_type): EventTypeResource
     {
-        //
+        $event_type->update([
+            'name' => $request->name,
+        ]);
+
+        $event_type->items()->sync($request->items);
+
+        return new EventTypeResource($event_type);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Organization $org, EventType $event_type)
     {
-        //
+        $event_type->delete();
     }
 }

@@ -37,4 +37,10 @@ class TodoCardPayment extends Model
     {
         return $this->belongsTo(Supplier::class);
     }
+
+    public function installments()
+    {
+        return $this->hasMany(Installment::class, 'installmentable_id', 'todo_card_id')
+                    ->where('installmentable_type', TodoCard::class);
+    }
 }

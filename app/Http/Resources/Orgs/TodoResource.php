@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Orgs;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -12,11 +13,15 @@ class TodoResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray(Request $request)
     {
+        $owner = User::find($this->owner_id);
         return [
             'id' => $this->id,
-            'owner_id' => $this->owner_id,
+            'owner' => [
+                'id' => $owner->id,
+                'name' => $owner->name, 
+            ],
             'contract_id' => $this->contract_id,
             'event_type' => $this->contract->eventType->name,
             'status' => $this->status,

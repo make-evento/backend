@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Orgs;
 
+use App\Events\ContractCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Orgs\Contract\ContractStoreRequest;
 use App\Models\Address;
@@ -55,7 +56,10 @@ class ContractController extends Controller
             ...$request->validated('customer')
         ]);
 
-        $contract->contractPayment()->create($request->validated('payment'));
+        $payment = $request->validated('payment');
+        $payment['installments_value'] = round($payment['cost_total'], 2);
+
+        $contract->contractPayment()->create($payment);
 
         $proposal->update([
             'status' => ProposalStatus::APPROVED
@@ -70,7 +74,7 @@ class ContractController extends Controller
                 'status' => TodoCardStatus::TODO,
                 'owner_id' => auth()->user()->getAuthIdentifier()
             ]);
-
+            
             $card->item()->create([
                 'item_id' => $item->item_id,
                 'description' => $item->description,
@@ -88,6 +92,10 @@ class ContractController extends Controller
         }
 
         DB::commit();
+
+        ContractCreated::dispatch(
+            $contract
+        );
 
         return response()->json($contract->load('address', 'contractPayment'));
     }

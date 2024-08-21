@@ -12,7 +12,7 @@ class ProposalResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray(Request $request)
     {
         return [
             'id' => $this->id,
@@ -23,7 +23,7 @@ class ProposalResource extends JsonResource
             'description' => $this->description,
             'duration' => $this->duration,
             'status' => $this->status,
-            'total' => 0.00,
+            'total' => $this->calculateTotal($this),
             'created_at' => $this->created_at->format('Y-m-d'),
             'customers' => CustomerResource::collection($this->customers),
             'days' => ProposalDayResource::collection($this->days),
@@ -31,4 +31,16 @@ class ProposalResource extends JsonResource
             'taxes' => ProposalTaxResource::collection($this->taxes),
         ];
     }
+
+    protected function calculateTotal($proposal)
+    {
+        $totalItems = $proposal->items->sum(function($item) {
+            return $item['cost_total'];
+        });
+
+        $totalTaxes = $proposal->taxes->sum('value');
+
+        return number_format($totalItems - $totalTaxes, 2);
+    }
+
 }

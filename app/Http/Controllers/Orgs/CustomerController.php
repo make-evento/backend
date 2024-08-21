@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Orgs;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Orgs\Customers\CustomerStoreRequest;
+use App\Http\Requests\Orgs\Customers\CustomerUpdateRequest;
 use App\Http\Resources\Orgs\CustomerResource;
+use App\Models\Customer;
 use App\Models\Organization;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -35,24 +37,25 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Organization $org, Customer $customer) : CustomerResource
     {
-        //
+        return new CustomerResource($customer);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CustomerUpdateRequest $request, Organization $org, Customer $customer)
     {
-        //
+        $response = tap($customer)->update($request->validated());
+        return new CustomerResource($response);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Organization $org, Customer $customer)
     {
-        //
+        $customer->delete();
     }
 }

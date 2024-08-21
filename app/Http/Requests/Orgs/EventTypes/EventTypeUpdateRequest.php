@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Orgs\Todo;
+namespace App\Http\Requests\Orgs\EventTypes;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TodoUpdateSupplierRequest extends FormRequest
+class EventTypeUpdateRequest extends FormRequest
 {
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -14,9 +15,8 @@ class TodoUpdateSupplierRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "supplier_quantity" => 'required|numeric',
-            "supplier_cost_per_unit" => 'required|numeric',
-            "supplier_days" => 'required|numeric',
+            'name' => 'required|string|max:255',
+            'items.*' => 'required|string|exists:items,id',
         ];
     }
 }

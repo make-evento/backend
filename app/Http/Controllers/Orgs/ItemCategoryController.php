@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Orgs;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Orgs\ItemCategories\ItemCategoryStoreRequest;
+use App\Http\Requests\Orgs\ItemCategories\ItemCategoryUpdateRequest;
 use App\Http\Resources\Orgs\ItemCategoryResource;
 use App\Models\ItemCategory;
 use App\Models\Organization;
@@ -33,24 +34,25 @@ class ItemCategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ItemCategory $itemCategory)
+    public function show(Organization $org, ItemCategory $category): ItemCategoryResource
     {
-        //
+        return new ItemCategoryResource($category);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ItemCategory $itemCategory)
+    public function update(Organization $org, ItemCategoryUpdateRequest $request, ItemCategory $category)
     {
-        //
+        $response = tap($category)->update($request->validated());
+        return new ItemCategoryResource($response);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ItemCategory $itemCategory)
+    public function destroy(Organization $org, ItemCategory $category)
     {
-        //
+        $category->delete();
     }
 }

@@ -32,7 +32,7 @@ class ContractStoreRequest extends FormRequest
             'payment.payment_method' => 'required|string|in:full_payment,installments',
             'payment.payment_type' => 'required|string|in:pix,boleto,credit_card',
             'payment.installments' => 'required|numeric|min:1',
-            'payment.installments_value' => 'required|numeric',
+            // 'payment.installments_value' => 'required|numeric',
             'payment.due_date' => 'required|date',
             'payment.fine' => 'required|numeric',
             'payment.interest' => 'required|numeric',

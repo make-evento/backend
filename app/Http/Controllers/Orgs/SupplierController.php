@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Orgs;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Orgs\Suppliers\SupplierStoreRequest;
+use App\Http\Requests\Orgs\Suppliers\SupplierUpdateRequest;
 use App\Http\Resources\Orgs\SupplierResource;
 use App\Models\Address;
 use App\Models\Organization;
@@ -50,24 +51,37 @@ class SupplierController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Supplier $supplier)
+    public function show(Organization $org, Supplier $supplier): SupplierResource
     {
-        //
+        return new SupplierResource($supplier);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Supplier $supplier)
+    public function update(SupplierUpdateRequest $request, Organization $org, Supplier $supplier) : SupplierResource
     {
-        //
+        DB::beginTransaction();
+
+        $supplier->update($request->validated());
+        $supplier->address->update($request->address);
+
+        $supplier->categories()->sync($request->categories);
+        $supplier->bankAccounts()->delete();
+        $supplier->bankAccounts()->createMany($request->bank_accounts);
+        $supplier->contacts()->delete();
+        $supplier->contacts()->createMany($request->contacts);
+
+        DB::commit();
+
+        return new SupplierResource($supplier);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Supplier $supplier)
+    public function destroy(Organization $org, Supplier $supplier)
     {
-        //
+        $supplier->delete();
     }
 }

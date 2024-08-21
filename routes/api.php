@@ -8,7 +8,9 @@ use App\Http\Controllers\Orgs\ItemCategoryController;
 use App\Http\Controllers\Orgs\ItemController;
 use App\Http\Controllers\Orgs\MemberController;
 use App\Http\Controllers\Orgs\OrganizationController;
+use App\Http\Controllers\Orgs\PayableController;
 use App\Http\Controllers\Orgs\ProposalController;
+use App\Http\Controllers\Orgs\ReceivablesController;
 use App\Http\Controllers\Orgs\SupplierController;
 use App\Http\Controllers\Orgs\TodoCardController;
 use App\Http\Controllers\Orgs\TodoCardPaymentController;
@@ -50,5 +52,13 @@ Route::middleware('auth:sanctum')->group(function () {
        Route::post('/proposals/{proposal}/{version}/contract', [ContractController::class, 'store']);
 
        Route::apiResource('/proposals', ProposalController::class);
+
+       Route::prefix('/payables')->group(function () {
+           Route::apiResource('/', PayableController::class);
+       });
+
+       Route::prefix('/receivables')->group(function () {
+           Route::apiResource('/', ReceivablesController::class);
+       });
    });
 });

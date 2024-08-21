@@ -21,8 +21,8 @@ class TodoPaymentStoreRequest extends FormRequest
             'first_payment_at' => 'required|date',
             'amount' => 'required|numeric',
             'description' => 'required|string',
-            'attachments' => 'required|array',
-            'attachments.*' => 'required|file',
+            'attachments' => 'nullable|array',
+            'attachments.*' => 'nullable|file',
         ];
     }
 }

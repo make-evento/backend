@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Orgs;
 
+use App\Events\TodoPaymentCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Orgs\Todo\Payment\TodoPaymentStoreRequest;
 use App\Http\Resources\Orgs\TodoPaymentResource;
@@ -34,6 +35,8 @@ class TodoCardPaymentController extends Controller
             ...$request->validated(),
             'attachments' => $files,
         ]);
+
+        TodoPaymentCreated::dispatch($payment);
 
         return new TodoPaymentResource($payment);
     }

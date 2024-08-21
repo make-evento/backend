@@ -22,7 +22,7 @@ class ProposalStoreRequest extends FormRequest
             'customers.*' => 'nullable|string|exists:customers,id',
             'duration' => 'nullable|string',
             'parent' => 'nullable|string|exists:proposals,id',
-            'days' => 'required|array|min:1',
+            'days' => 'nullable|array',
             'days.*.date' => 'required|date',
             'days.*.start_time' => 'nullable|date_format:H:i',
             'days.*.end_time' => 'nullable|date_format:H:i|after:days.*.start_time',

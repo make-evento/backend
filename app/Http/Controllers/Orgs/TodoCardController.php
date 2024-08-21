@@ -44,8 +44,6 @@ class TodoCardController extends Controller
      */
     public function update(TodoUpdateRequest $request, Organization $org, TodoCard $todo): JsonResponse
     {
-        // TODO: check owner is a member of the organization
-        // TODO: check logged in user is an admin of the organization
 
         tap($todo)->update($request->validated());
         return response()->json(['message' => 'Todo updated successfully']);
@@ -53,8 +51,6 @@ class TodoCardController extends Controller
 
     public function owner(TodoUpdateOwnerRequest $request, Organization $org, TodoCard $todo): JsonResponse
     {
-        // TODO: check owner is a member of the organization
-        // TODO: check logged in user is an admin of the organization
 
         tap($todo)->update($request->validated());
         return response()->json(['message' => 'Todo owner updated successfully']);
@@ -62,10 +58,10 @@ class TodoCardController extends Controller
 
     public function supplier(TodoUpdateSupplierRequest $request, Organization $org, TodoCard $todo): JsonResponse
     {
-        // TODO: check owner is a member of the organization
-        // TODO: check logged in user is an admin of the organization
-
-        tap($todo->item)->update($request->validated());
+        $request = $request->validated();
+        $supplierCostTotal = $request->supplier_quantity * $request->supplier_cost_per_unit;
+        $request['supplier_cost_total'] = $supplierCostTotal;
+        tap($todo->item)->update($request);
         return response()->json(['message' => 'Todo supplier updated successfully']);
     }
 

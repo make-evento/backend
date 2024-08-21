@@ -19,7 +19,7 @@ class ProposalController extends Controller
      */
     public function index(Organization $org): AnonymousResourceCollection
     {
-        $proposals = $org->proposals()->where("parent_id", null)->get();
+        $proposals = $org->proposals()->where('parent_id', null)->get();
         return ProposalResource::collection($proposals);
     }
 
@@ -41,22 +41,29 @@ class ProposalController extends Controller
     public function store(
         ProposalStoreRequest $request,
         Organization $org
-    ): ProposalResource {
+    ) {
         DB::beginTransaction();
-
         $version = 1;
-
+        
         if ($request->parent) {
-            $version =
-                $org
-                    ->proposals()
-                    ->where(function ($query) use ($request) {
-                        $query
-                            ->where("id", $request->parent)
-                            ->orWhere("parent_id", $request->parent);
-                    })
-                    ->count() + 1;
-        }
+            $version = $org->proposals()
+                ->where(function ($query) use ($request) {
+                    $query->where("id", $request->parent)
+                          ->orWhere("parent_id", $request->parent);
+                })
+                ->count() + 1;
+        
+            $proposal = $org->proposals()
+                ->where(function ($query) use ($request) {
+                    $query->where('id', $request->parent)
+                          ->orWhere('parent_id', $request->parent);
+                })
+                ->first();
+        
+            if ($proposal && $proposal->status == 'approved') {
+                return response()->json(['message' => 'There is already an accepted version of the proposal'], 400);
+            }
+        }        
 
         /** @var Proposal $proposal */
         $proposal = $org
@@ -110,8 +117,8 @@ class ProposalController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Proposal $proposal)
+    public function destroy(Organization $org, Proposal $proposal)
     {
-        //
+        $proposal->delete();
     }
 }
