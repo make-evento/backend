@@ -38,12 +38,7 @@ class Installment extends Model
         return $this->belongsTo(Organization::class);
     }
 
-    public function contract()
-    {
-        return $this->morphTo(__FUNCTION__, 'installmentable_type', 'installmentable_id');
-    }
-
-    public function todoCard()
+    public function morph()
     {
         return $this->morphTo(__FUNCTION__, 'installmentable_type', 'installmentable_id');
     }

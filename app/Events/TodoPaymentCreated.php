@@ -19,7 +19,8 @@ class TodoPaymentCreated
      * Create a new event instance.
      */
     public function __construct(
-        public readonly TodoCardPayment $payment
+        public readonly TodoCardPayment $payment,
+        public readonly array $installments
     )
     {
         //

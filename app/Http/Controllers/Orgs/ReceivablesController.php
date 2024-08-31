@@ -13,7 +13,7 @@ class ReceivablesController extends Controller
     public function index(Organization $org)
     {
         $installments = Installment::where('organization_id', $org->id)
-            ->where('installmentable_type', 'App\Models\Contract')
+            ->where('installmentable_type', 'App\Models\Receivable')
             ->orderBy('due_date', 'asc')
             ->simplePaginate(20);
 

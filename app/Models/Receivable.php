@@ -24,14 +24,19 @@ class Receivable extends Model
         "status" => InstallmentStatus::class,
     ];
 
-    public function contract()
+    public function organization()
     {
-        return $this->belongsTo(Contract::class, "contract_id");
+        return $this->belongsTo(Organization::class);
     }
 
     public function customer()
     {
         return $this->belongsTo(Customer::class, "customer_id");
+    }
+
+    public function origin()
+    {
+        return $this->morphTo();
     }
 
     public function installments()

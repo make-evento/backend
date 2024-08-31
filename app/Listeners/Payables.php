@@ -28,44 +28,35 @@ class Payables
         $todo = $payment->todoCard;
 
         $due_date = $payment->first_payment_at;
-        $installments = $payment->installment;
+        $installments = $event->installments;
 
         // Cria um novo Payable
         $payable = new Payable();
-        $payable->todo_card_id = $payment->todo_card_id;
-        $payable->supplier_id = $payment->supplier_id;
+        $payable->organization_id = $todo->organization_id;
+        $payable->destiny()->associate($payment);
         $payable->amount = $payment->amount;
-        $payable->installments = $installments;
+        $payable->installments = count($installments); // Quantidade de parcelas
         $payable->status = ($due_date < Carbon::now()) ? 'late' : 'pending';
         $payable->payment_type = $payment->payment_type;
-        $payable->installments = $installments; // Set the installments property
+
+        $payable->installments = count($installments);
+
         $payable->save();
 
         // Calcula os valores das parcelas
         $total_amount = $payment->amount;
-        $installment_amount = round($total_amount / $installments, 2);
-        $calculated_total = 0;
+        $installment_amount = round($total_amount / count($installments), 2);
 
         // Cria as parcelas
-        for ($i = 1; $i <= $installments; $i++) {
+        foreach ($installments as $i => $_installment) {
             $installment = new Installment();
-            $installment->installmentable()->associate($todo); // Associa ao contrato
-            $installment->installment = $i;
-            $installment->total_installment = $installments;
+            $installment->installmentable()->associate($payable); // Associa ao contrato
+            $installment->installment = $i + 1;
+            $installment->total_installment = count($installments);
             $installment->organization_id = $todo->organization_id;
             $installment->payment_type = $payment->payment_type;
-            if($i == 1) {
-                $installment->due_date = $due_date;
-            } else {
-                $installment->due_date = $due_date->addMonth();
-            }
-            if ($i == $installments) {
-                // Última parcela, ajusta para cobrir qualquer diferença
-                $installment->amount = $total_amount - $calculated_total;
-            } else {
-                $installment->amount = $installment_amount;
-                $calculated_total += $installment_amount;
-            }
+            $installment->due_date = $_installment['due_date'];
+            $installment->amount = $_installment['amount']; // Usar o valor real da parcela
 
             $installment->save();
         }

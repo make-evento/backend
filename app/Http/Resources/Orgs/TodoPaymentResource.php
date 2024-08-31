@@ -16,34 +16,50 @@ class TodoPaymentResource extends JsonResource
      */
     public function toArray($request)
     {
-        // TODO: insert due_date
-        // TODO: Storage::disk('r2')->url();
+        $Payable = $this->payables->first();
+
+        $paidCount = $Payable
+            ->installmentsDetails()
+            ->where('status', 'paid')
+            ->count();
+
+        $nextInstallment = $Payable
+            ->installmentsDetails()
+            ->where('status', 'pending')
+            ->orderBy('due_date', 'asc')
+            ->first();
+
         return [
             'id' => $this->id,
-            'installment' => $this->installments()
-                ->where('status', 'paid')
-                ->count() + 1 . '/' . $this->installment,
+            'installment' => ($paidCount + 1) . '/' . $Payable->installments,
             'amount' => $this->amount,
-            'due_date' => $this->installments()
-                ->where('status', 'pending')
-                ->first()->due_date->format('Y-m-d'),
-            'status' => $this->status($this->todoCard->id),
+            'due_date' => $nextInstallment ? date('d/m/Y', strtotime($nextInstallment->due_date)) : null,
+            'status' => $this->status($Payable),
             'payment_type' => $this->payment_type,
             'supplier' => $this->supplier->nome_fantasia,
             'attachments' => $this->attachments,
         ];
-    
     }
 
-    protected function status($installmentable_id)
+    protected function status($Payable)
     {
-        $installments_paid = $this->installments()->where('status', 'paid')->count();
-        if ($installments_paid === 0) {
-            return 'pending';
-        }
-        if ($installments_paid === $this->installments->count()) {
+        $installments = $Payable->installmentsDetails()->count();
+        $paid = $Payable->installmentsDetails()->where('status', 'paid')->count();
+        $pending = $Payable->installmentsDetails()->where('status', 'pending')->count();
+        $canceled = $Payable->installmentsDetails()->where('status', 'canceled')->count();
+
+        if ($installments === $paid) {
             return 'paid';
         }
+
+        if ($installments === $canceled) {
+            return 'canceled';
+        }
+
+        if ($pending > 0) {
+            return 'pending';
+        }
+
         return 'partial';
     }
 }

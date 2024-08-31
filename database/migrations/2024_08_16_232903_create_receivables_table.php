@@ -14,13 +14,15 @@ return new class extends Migration
         Schema::create('receivables', function (Blueprint $table) {
             $table->ulid("id")->primary();
             $table
-                ->foreignUlid("contract_id")
+                ->foreignUlid("organization_id")
                 ->constrained()
                 ->cascadeOnDelete();
             $table
                 ->foreignUlid("customer_id")
                 ->constrained()
+                ->nullable()
                 ->cascadeOnDelete();
+            $table->ulidMorphs('origin');
             $table->decimal('amount', 10, 2);
             $table->string('status');
             $table->string('payment_type');

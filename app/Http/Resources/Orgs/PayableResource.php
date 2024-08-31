@@ -15,25 +15,23 @@ class PayableResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray(Request $request)
     {
         return [
             "supplier" => [
-            "name" => $this->todoCard
-                ->payments->first()
-                ->supplier->nome_fantasia,
-            "category" => $this->todoCard
-                ->payments->first()
-                ->supplier
-                ->categories->pluck('id')->toArray()
+            "name" => $this->morph
+                ->destiny->supplier->nome_fantasia,
+            "category" => $this->morph
+                ->destiny->supplier->categories->pluck('id')->toArray()
             ],
-            "contract_id" => $this->todoCard->contract_id,
+            "contract_id" => $this->morph->destiny->todoCard ? $this->morph->destiny->todoCard->contract_id : null,
             "amount" => $this->amount,
             "installment" => $this->installment,
             "total_installment" => $this->total_installment,
-            "due_date" => $this->due_date, // Order By
+            "due_date" => $this->due_date, // Ordened By asc
             "status" => $this->status,
-            "event_date" => $this->todoCard->contract->event_date,
+            "event_date" => $this->morph->destiny->todoCard ? 
+                $this->morph->destiny->todoCard->contract->event_date : null,
             "payment_type" => $this->payment_type
         ];
     }

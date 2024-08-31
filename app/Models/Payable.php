@@ -24,17 +24,17 @@ class Payable extends Model
         "status" => InstallmentStatus::class,
     ];
 
-    public function supplier()
+    public function destiny()
     {
-        return $this->belongsTo(Supplier::class, "supplier_id");
+        return $this->morphTo();
     }
 
-    public function todoCard()
+    public function organization()
     {
-        return $this->belongsTo(TodoCard::class, "todo_card_id");
+        return $this->belongsTo(Organization::class);
     }
 
-    public function installments()
+    public function installmentsDetails()
     {
         return $this->morphMany(Installment::class, "installmentable");
     }

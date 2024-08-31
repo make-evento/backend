@@ -23,22 +23,49 @@ class TodoCardPaymentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(TodoPaymentStoreRequest $request, Organization $org, TodoCard $todo): TodoPaymentResource
+    public function store(TodoPaymentStoreRequest $request, Organization $org, TodoCard $todo)
     {
         $files = [];
 
         foreach ($request->file('attachments') as $file) {
             $files[] = $file->store('attachments', 'r2');
         }
+        $request_validated = $request->validated();
+        $request_validated['installment'] = count($request->installments);
+
+        $request_validated['first_payment_at'] = $this->firstPayment($request->installments);
+        $request_validated['amount'] = $this->amount($request->installments);
 
         $payment = $todo->payments()->create([
-            ...$request->validated(),
+            ...$request_validated,
             'attachments' => $files,
         ]);
 
-        TodoPaymentCreated::dispatch($payment);
+        TodoPaymentCreated::dispatch($payment, $request->installments);
 
         return new TodoPaymentResource($payment);
+    }
+
+    public function firstPayment($installments){
+        $first_payment = '';
+        foreach($installments as $installment) {
+            if($first_payment == '') {
+                $first_payment = $installment['due_date'];
+            }else{
+                $first_payment = $first_payment < $installment['due_date'] ? $first_payment : $installment['due_date'];
+            }
+        }
+
+        return $first_payment;
+    }
+
+    public function amount($installments){
+        $amount = 0;
+        foreach($installments as $installment) {
+            $amount += $installment['amount'];
+        }
+
+        return $amount;
     }
 
     /**

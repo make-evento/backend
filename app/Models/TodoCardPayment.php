@@ -38,9 +38,8 @@ class TodoCardPayment extends Model
         return $this->belongsTo(Supplier::class);
     }
 
-    public function installments()
+    public function payables()
     {
-        return $this->hasMany(Installment::class, 'installmentable_id', 'todo_card_id')
-                    ->where('installmentable_type', TodoCard::class);
+        return $this->morphMany(Payable::class, 'destiny');
     }
 }

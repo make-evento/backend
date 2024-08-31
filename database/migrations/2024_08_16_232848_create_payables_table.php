@@ -14,13 +14,10 @@ return new class extends Migration
         Schema::create('payables', function (Blueprint $table) {
             $table->ulid("id")->primary();
             $table
-                ->foreignUlid("supplier_id")
+                ->foreignUlid("organization_id")
                 ->constrained()
                 ->cascadeOnDelete();
-            $table
-                ->foreignUlid('todo_card_id')
-                ->constrained()
-                ->cascadeOnDelete();
+            $table->ulidMorphs('destiny');
             $table->decimal('amount', 10, 2);
             $table->string('status');
             $table->string('payment_type');
