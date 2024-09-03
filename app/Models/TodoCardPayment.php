@@ -40,6 +40,6 @@ class TodoCardPayment extends Model
 
     public function payables()
     {
-        return $this->morphMany(Payable::class, 'destiny');
+        return $this->morphMany(Payable::class, 'recipient');
     }
 }
