@@ -17,7 +17,7 @@ return new class extends Migration
                 ->foreignUlid("organization_id")
                 ->constrained()
                 ->cascadeOnDelete();
-            $table->ulidMorphs('destiny');
+            $table->ulidMorphs('recipient');
             $table->decimal('amount', 10, 2);
             $table->string('status');
             $table->string('payment_type');

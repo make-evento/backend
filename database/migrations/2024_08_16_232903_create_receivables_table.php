@@ -22,7 +22,7 @@ return new class extends Migration
                 ->constrained()
                 ->nullable()
                 ->cascadeOnDelete();
-            $table->ulidMorphs('origin');
+            $table->ulidMorphs('sender');
             $table->decimal('amount', 10, 2);
             $table->string('status');
             $table->string('payment_type');
