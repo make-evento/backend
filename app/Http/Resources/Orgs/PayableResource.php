@@ -19,19 +19,19 @@ class PayableResource extends JsonResource
     {
         return [
             "supplier" => [
-            "name" => $this->morph
-                ->destiny->supplier->nome_fantasia,
-            "category" => $this->morph
-                ->destiny->supplier->categories->pluck('id')->toArray()
+                "name" => $this->morph
+                    ->recipient->supplier->nome_fantasia,
+                "category" => $this->morph
+                    ->recipient->supplier->categories->pluck('id')->toArray()
             ],
-            "contract_id" => $this->morph->destiny->todoCard ? $this->morph->destiny->todoCard->contract_id : null,
+            "contract_id" => $this->morph->recipient->todoCard ? $this->morph->recipient->todoCard->contract_id : null,
             "amount" => $this->amount,
             "installment" => $this->installment,
             "total_installment" => $this->total_installment,
             "due_date" => $this->due_date, // Ordened By asc
             "status" => $this->status,
-            "event_date" => $this->morph->destiny->todoCard ? 
-                $this->morph->destiny->todoCard->contract->event_date : null,
+            "event_date" => $this->morph->recipient->todoCard ? 
+                $this->morph->recipient->todoCard->contract->event_date : null,
             "payment_type" => $this->payment_type
         ];
     }

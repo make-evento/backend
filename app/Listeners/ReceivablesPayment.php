@@ -40,34 +40,17 @@ class ReceivablesPayment
         $receivable->payment_type = $contractPayment->payment_type;
         $receivable->save();
 
-        // Calcula os valores das parcelas
-        $total_amount = $contractPayment->cost_total;
-        $installment_amount = round($total_amount / $installments, 2);
-        $calculated_total = 0;
-
         // Cria as parcelas
-        for ($i = 1; $i <= $installments; $i++) {
+        foreach ($event->installments as $i => $_installment) {
             $installment = new Installment();
             $installment->installmentable()->associate($receivable); // Associa ao contrato
-            $installment->installment = $i;
-            $installment->total_installment = $installments;
+            $installment->installment = $i + 1;
+            $installment->total_installment = count($event->installments);
             $installment->organization_id = $event->contract->organization_id;
             $installment->payment_type = $contractPayment->payment_type;
-            // Define o valor da parcela
-            if ($i == $installments) {
-                // Última parcela, ajusta para cobrir qualquer diferença
-                $installment->amount = $total_amount - $calculated_total;
-            } else {
-                $installment->amount = $installment_amount;
-                $calculated_total += $installment_amount;
-            }
-
-            // Define a data de vencimento
-            $installment_due_date = $due_date->copy()->addMonths($i - 1);
-            $installment->due_date = $installment_due_date;
-
-            // Verifica se a data de vencimento é passada
-            $installment->status = ($installment_due_date->isPast()) ? 'late' : 'pending';
+            $installment->amount = $_installment['amount'];
+            $installment->due_date = $_installment['due_date'];
+            $installment->status = ($installment->due_date->isPast()) ? 'late' : 'pending';
 
             $installment->save();
         }

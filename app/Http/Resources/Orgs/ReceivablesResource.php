@@ -17,13 +17,13 @@ class ReceivablesResource extends JsonResource
         // return $this->morph;
         return [
             "customer" => [
-                "name" => $this->morph->origin->proposal->customers()->first()->name,
-                "email" => $this->morph->origin->proposal->customers()->first()->email
+                "name" => $this->morph->sender->proposal->customers()->first()->name,
+                "email" => $this->morph->sender->proposal->customers()->first()->email
             ],
-            "contract_id" => $this->morph->origin->id,
+            "contract_id" => $this->morph->sender->id,
             "event" => [
-                "name" => $this->morph->origin->proposal->name,
-                "date" => ($this->morph->origin->proposal->days->count() > 0) ? $this->morph->origin->proposal->days->first()->date : null
+                "name" => $this->morph->sender->proposal->name,
+                "date" => ($this->morph->sender->proposal->days->count() > 0) ? $this->morph->sender->proposal->days->first()->date : null
             ],
             "amount" => $this->amount,
             "installment" => $this->installment,

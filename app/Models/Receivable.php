@@ -34,7 +34,7 @@ class Receivable extends Model
         return $this->belongsTo(Customer::class, "customer_id");
     }
 
-    public function origin()
+    public function sender()
     {
         return $this->morphTo();
     }

@@ -19,7 +19,8 @@ class ContractCreated
      * Create a new event instance.
      */
     public function __construct(
-        public readonly Contract $contract
+        public readonly Contract $contract,
+        public readonly array $installments
     )
     {
         

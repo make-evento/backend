@@ -24,7 +24,7 @@ class Payable extends Model
         "status" => InstallmentStatus::class,
     ];
 
-    public function destiny()
+    public function recipient()
     {
         return $this->morphTo();
     }

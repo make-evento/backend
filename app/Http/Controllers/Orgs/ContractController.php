@@ -94,7 +94,8 @@ class ContractController extends Controller
         DB::commit();
 
         ContractCreated::dispatch(
-            $contract
+            $contract,
+            $request->installments
         );
 
         return response()->json($contract->load('address', 'contractPayment'));
