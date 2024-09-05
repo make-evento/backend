@@ -33,7 +33,7 @@ class Payables
         // Cria um novo Payable
         $payable = new Payable();
         $payable->organization_id = $todo->organization_id;
-        $payable->destiny()->associate($payment);
+        $payable->recipient()->associate($payment);
         $payable->amount = $payment->amount;
         $payable->installments = count($installments); // Quantidade de parcelas
         $payable->status = ($due_date < Carbon::now()) ? 'late' : 'pending';

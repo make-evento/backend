@@ -5,22 +5,35 @@ namespace App\Http\Controllers\Orgs;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Orgs\Payable\PayableStoreRequest;
 use App\Http\Resources\Orgs\PayableResource;
+use App\Models\Contract;
 use App\Models\Installment;
 use App\Models\Organization;
 use App\Models\Payable;
 use App\Models\Supplier;
+use App\Models\TodoCardPayment;
 use Illuminate\Http\Request;
 
 class PayableController extends Controller
 {
     public function index(Organization $org)
     {
-        $installments = Installment::where('organization_id', $org->id)
-            ->where('installmentable_type', 'App\Models\Payable')
-            ->orderBy('due_date', 'asc')
-            ->simplePaginate(20);
+        $payablesQuery = Payable::where('organization_id', $org->id)
+            ->orderByRaw("CASE WHEN status = 'late' THEN 1 WHEN status = 'pending' THEN 2 WHEN status = 'paid' THEN 3 ELSE 4 END");
 
-        return PayableResource::collection($installments);
+        $payables = $payablesQuery->get();
+
+        foreach ($payables as $payable) {
+            $lateInstallments = $payable->installmentsDetails()->where('status', 'late')->exists();
+            if ($lateInstallments) {
+                $payable->status = 'late';
+                $payable->save();
+            }
+        }
+
+        // Aplicar a paginação na consulta original antes do get()
+        $paginatedPayables = $payablesQuery->simplePaginate(20);
+
+        return PayableResource::collection($paginatedPayables);
     }
 
     public function store(PayableStoreRequest $request, Organization $org)
@@ -29,7 +42,9 @@ class PayableController extends Controller
         if($_r['recipient']['type'] === 'supplier') {
             $recipient = Supplier::find($_r['recipient']['id']);
         }elseif($_r['recipient']['type'] === 'contract') {
-            // 
+            $recipient = Contract::find($_r['recipient']['id']);
+        }elseif($_r['recipient']['type'] === 'todo_card_payment') {
+            $recipient = TodoCardPayment::find($_r['recipient']['id']);
         }
 
         $payable = new Payable();

@@ -14,21 +14,26 @@ class ReceivablesResource extends JsonResource
      */
     public function toArray(Request $request)
     {
-        // return $this->morph;
+        // return $this->customer;
         return [
             "customer" => [
-                "name" => $this->morph->sender->proposal->customers()->first()->name,
-                "email" => $this->morph->sender->proposal->customers()->first()->email
+                "name" => $this->customer->name,
+                "email" => $this->customer->email
             ],
-            "contract_id" => $this->morph->sender->id,
+            "contract_id" => $this->sender->id,
             "event" => [
-                "name" => $this->morph->sender->proposal->name,
-                "date" => ($this->morph->sender->proposal->days->count() > 0) ? $this->morph->sender->proposal->days->first()->date : null
+                "name" => $this->sender->proposal->name,
+                "date" => ($this->sender->proposal->days->count() > 0) ? $this->morph->sender->proposal->days->first()->date : null
             ],
-            "amount" => $this->amount,
-            "installment" => $this->installment,
+            "amount" => $this->installmentsDetails->sum('amount'),
+            "installment" => ($this->installmentsDetails()
+                ->where('status', 'paid')
+                ->count() + 1 ).'/'.$this->installments,
+            "installments" => $this->installmentsDetails()
+                ->select('amount', 'due_date', 'status')
+                ->orderBy('due_date', 'asc')->get(),
             "total_installment" => $this->total_installment,
-            "due_date" => $this->due_date->format("Y-m-d"),
+            "due_date" => $this->installmentsDetails()->where('status', 'pending')->orderBy('due_date', 'asc')->first()->due_date,
             "status" => $this->status,
             "payment_type" => $this->payment_type
         ];

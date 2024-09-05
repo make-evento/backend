@@ -39,7 +39,7 @@ class Receivable extends Model
         return $this->morphTo();
     }
 
-    public function installments()
+    public function installmentsDetails()
     {
         return $this->morphMany(Installment::class, "installmentable");
     }

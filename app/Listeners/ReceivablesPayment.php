@@ -33,7 +33,7 @@ class ReceivablesPayment
         $receivable = new Receivable();
         $receivable->organization_id = $event->contract->organization_id;
         $receivable->customer_id = $event->contract->proposal->customers->first()->id;
-        $receivable->origin()->associate($event->contract);
+        $receivable->sender()->associate($event->contract);
         $receivable->amount = $contractPayment->cost_total;
         $receivable->installments = $installments;
         $receivable->status = ($due_date < Carbon::now()) ? 'late' : 'pending';
