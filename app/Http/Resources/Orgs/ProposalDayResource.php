@@ -17,8 +17,8 @@ class ProposalDayResource extends JsonResource
         return [
             'id' => $this->id,
             'date' => $this->date,
-            'start' => $this->start,
-            'end' => $this->end,
+            'start_time' => $this->start,
+            'end_time' => $this->end,
         ];
     }
 }

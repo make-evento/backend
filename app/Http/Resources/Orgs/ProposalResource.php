@@ -22,9 +22,10 @@ class ProposalResource extends JsonResource
             'people_count' => $this->people_count,
             'description' => $this->description,
             'duration' => $this->duration,
+            'created_by' => $this->user()->select('id', 'name')->first(),
             'status' => $this->status,
             'total' => $this->calculateTotal($this),
-            'created_at' => $this->created_at->format('Y-m-d'),
+            'created_at' => $this->created_at->format('d/m/Y'),
             'customers' => CustomerResource::collection($this->customers),
             'days' => ProposalDayResource::collection($this->days),
             'items' => ProposalItemResource::collection($this->items),
@@ -40,7 +41,7 @@ class ProposalResource extends JsonResource
 
         $totalTaxes = $proposal->taxes->sum('value');
 
-        return number_format($totalItems - $totalTaxes, 2);
+        return floatval($totalItems - $totalTaxes);
     }
 
 }

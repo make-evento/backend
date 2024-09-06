@@ -13,10 +13,10 @@ class ReceivableStoreRequest extends FormRequest
             'contract_id' => 'required',
             'customer_id' => 'required',
             'installments' => 'required|array',
-            'installments.*.amount' => 'required',
+            'installments.*.amount' => 'required|numeric',
             'installments.*.due_date' => 'required|date',
             'first_due_date' => 'required|date',
-            'payment_type' => 'required',
+            'payment_type' => 'required|in:credit_card,boleto,pix',
         ];
     }
 }

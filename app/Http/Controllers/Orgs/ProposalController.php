@@ -26,7 +26,8 @@ class ProposalController extends Controller
     public function versions(
         Organization $org,
         Proposal $proposal
-    ): AnonymousResourceCollection {
+    ): AnonymousResourceCollection 
+    {
         $proposals = $org
             ->proposals()
             ->where("parent_id", $proposal->id)
@@ -44,7 +45,7 @@ class ProposalController extends Controller
     ) {
         DB::beginTransaction();
         $version = 1;
-        
+
         if ($request->parent) {
             $version = $org->proposals()
                 ->where(function ($query) use ($request) {
@@ -73,9 +74,19 @@ class ProposalController extends Controller
                 "version" => $version,
                 "status" => ProposalStatus::PENDING,
                 "parent_id" => $request->parent,
+                "created_by" => auth()->id(),
             ]);
 
-        $proposal->days()->createMany($request->days);
+        
+        $processedDays = [];
+        foreach ($request->days as $day) {
+            $day['date'] = date('Y-m-d', strtotime($day['date']));
+            $day['start_time'] = date('H:i:s', strtotime($day['start_time']));
+            $day['end_time'] = date('H:i:s', strtotime($day['end_time']));
+            $processedDays[] = $day;
+        }
+
+        $proposal->days()->createMany($processedDays);
         $proposal->taxes()->createMany($request->taxes);
         $proposal->items()->createMany(
             collect($request->items)->map(function ($item) {

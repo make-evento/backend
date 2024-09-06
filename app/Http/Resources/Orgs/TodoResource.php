@@ -16,6 +16,7 @@ class TodoResource extends JsonResource
     public function toArray(Request $request)
     {
         $owner = User::find($this->owner_id);
+
         return [
             'id' => $this->id,
             'owner' => [
@@ -23,11 +24,14 @@ class TodoResource extends JsonResource
                 'name' => $owner->name, 
             ],
             'contract_id' => $this->contract_id,
-            'event_type' => $this->contract->eventType->name,
+            'event' => [
+                'name' => $this->contract->proposal->name,
+                'type' => $this->contract->proposal->eventType->name,
+            ],
             'status' => $this->status,
             'item' => new TodoItemResource($this->item),
-            'contract_date' => optional($this->contract->contract_date)->format('Y-m-d'),
-            'event_date' => optional($this->contract->event_date)->format('Y-m-d'),
+            'contract_date' => optional($this->contract->contract_date)->format('d/m/Y'),
+            'event_date' => optional($this->contract->event_date)->format('d/m/Y'),
         ];
     }
 }

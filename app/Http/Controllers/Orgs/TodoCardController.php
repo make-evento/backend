@@ -56,10 +56,11 @@ class TodoCardController extends Controller
         return response()->json(['message' => 'Todo owner updated successfully']);
     }
 
-    public function supplier(TodoUpdateSupplierRequest $request, Organization $org, TodoCard $todo): JsonResponse
+    public function supplier(TodoUpdateSupplierRequest $request, Organization $org, TodoCard $todo)
     {
         $request = $request->validated();
-        $supplierCostTotal = $request->supplier_quantity * $request->supplier_cost_per_unit;
+
+        $supplierCostTotal = $request['supplier_quantity'] * $request['supplier_cost_per_unit'] * $request['supplier_days'];
         $request['supplier_cost_total'] = $supplierCostTotal;
         tap($todo->item)->update($request);
         return response()->json(['message' => 'Todo supplier updated successfully']);

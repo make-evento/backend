@@ -13,7 +13,7 @@ class ChecklistResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray(Request $request)
     {
         if ($this->proposal->parent_id === null) {
             $proposalUrl = $this->proposal_id . '/' . $this->proposal->version;
@@ -25,7 +25,7 @@ class ChecklistResource extends JsonResource
             'id' => $this->id,
             'name' => $this->proposal->name,
             'customer' =>  $this->proposal->customers[0]->name,
-            'date' => $this->event_date->format('Y-m-d'),
+            'date' => optional($this->event_date)->format('d/m/Y'),
             'people_count' => $this->proposal->people_count,
             'event_type' => $this->eventType->name,
             'progress' => 0,

@@ -60,4 +60,9 @@ class Proposal extends Model
     {
         return $this->hasMany(ProposalTax::class, "proposal_id");
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, "created_by");
+    }
 }
