@@ -13,6 +13,12 @@ class ProposalDay extends Model
 
     protected $fillable = ["proposal_id", "date", "start", "end"];
 
+    protected $casts = [
+        "date" => "date",
+        "start" => "datetime",
+        "end" => "datetime"
+    ];
+
     public function proposal(): BelongsTo
     {
         return $this->belongsTo(Proposal::class, "proposal_id");

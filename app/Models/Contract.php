@@ -63,4 +63,9 @@ class Contract extends Model
     {
         return $this->hasMany(TodoCard::class);
     }
+
+    public function receivables()
+    {
+        return $this->morphMany(Receivable::class, 'sender');
+    }
 }

@@ -72,4 +72,14 @@ class Organization extends Model
     {
         return $this->hasMany(TodoCard::class, "organization_id");
     }
+
+    public function receivables(): HasMany
+    {
+        return $this->hasMany(Receivable::class, "organization_id");
+    }
+
+    public function payables(): HasMany
+    {
+        return $this->hasMany(Payable::class, "organization_id");
+    }
 }

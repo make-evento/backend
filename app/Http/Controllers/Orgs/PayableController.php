@@ -76,4 +76,9 @@ class PayableController extends Controller
         }
         return new PayableResource($payable);
     }
+
+    public function show(Organization $org, Payable $payable)
+    {
+        return new PayableResource($payable);
+    }
 }

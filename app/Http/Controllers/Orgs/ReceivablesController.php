@@ -66,6 +66,13 @@ class ReceivablesController extends Controller
 
             $installment->save();
         }
+
+        return new ReceivablesResource($receivable);
+    }
+
+    public function show(Organization $org, Receivable $receivable)
+    {
+        return new ReceivablesResource($receivable);
     }
 
 }
